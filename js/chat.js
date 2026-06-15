@@ -19,13 +19,19 @@ let unsubscribe    = null;
 onAuthStateChanged(auth, async (user) => {
   if (!user) { window.location.href = "index.html"; return; }
   currentUser    = user;
-  activeLeagueId = sessionStorage.getItem('activeLeagueId');
-  if (!activeLeagueId) { window.location.href = "index.html"; return; }
+ activeLeagueId = sessionStorage.getItem('activeLeagueId') || 'GoQywLIG0V4oWGvl8yRQ';
+  sessionStorage.setItem('activeLeagueId', activeLeagueId);
 
   // Load user profile
-  const userSnap = await getDoc(doc(db, COLLECTIONS.users, user.uid));
-  if (!userSnap.exists()) { window.location.href = "index.html"; return; }
-  userProfile = userSnap.data();
+const userSnap = await getDoc(doc(db, COLLECTIONS.users, user.uid));
+  if (userSnap.exists()) {
+    userProfile = userSnap.data();
+  } else {
+    userProfile = {
+      displayName: 'Cedric',
+      email: user.email,
+    };
+  }
 
   // Load league info
   await loadLeagueInfo();
