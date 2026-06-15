@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WOS PREDICTS — Chat</title>
+  <link rel="stylesheet" href="css/global.css">
+  <style>
+    body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
+    .chat-header {
+      background: var(--surface);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .chat-header-left { display: flex; align-items: center; gap: 12px; }
+    .chat-back {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 20px;
+      line-height: 1;
+    }
+    .chat-title { color: var(--text); font-size: 16px; font-weight: 700; }
+    .chat-sub   { color: var(--text-muted); font-size: 12px; margin-top: 1px; }
+    .online-dot {
+      width: 8px; height: 8px;
+      background: var(--green);
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 4px;
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 16px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .msg-group { display: flex; flex-direction: column; gap: 4px; }
+    .msg-group.mine { align-items: flex-end; }
+    .msg-group.theirs { align-items: flex-start; }
+
+    .msg-sender {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+      padding: 0 4px;
+    }
+
+    .msg-bubble {
+      max-width: 75%;
+      padding: 10px 14px;
+      border-radius: 18px;
+      font-size: 14px;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+    .mine .msg-bubble {
+      background: var(--green);
+      color: #000;
+      border-bottom-right-radius: 4px;
+    }
+    .theirs .msg-bubble {
+      background: var(--surface-2, #1e2a3a);
+      color: var(--text);
+      border-bottom-left-radius: 4px;
+    }
+    .msg-time {
+      font-size: 10px;
+      color: var(--text-muted);
+      padding: 0 4px;
+    }
+
+    .date-divider {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 600;
+      margin: 8px 0;
+      position: relative;
+    }
+    .date-divider::before, .date-divider::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 30%;
+      height: 1px;
+      background: var(--border);
+    }
+    .date-divider::before { left: 0; }
+    .date-divider::after  { right: 0; }
+
+    .chat-input-bar {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 12px 16px;
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .chat-input {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 10px 16px;
+      color: var(--text);
+      font-size: 14px;
+      resize: none;
+      max-height: 120px;
+      outline: none;
+      font-family: inherit;
+      line-height: 1.4;
+    }
+    .chat-input:focus { border-color: var(--green); }
+    .send-btn {
+      width: 42px;
+      height: 42px;
+      background: var(--green);
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: opacity 0.2s;
+    }
+    .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .send-btn svg { width: 18px; height: 18px; fill: #000; }
+
+    .empty-chat {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      gap: 8px;
+      padding: 40px;
+      text-align: center;
+    }
+    .empty-chat-icon { font-size: 48px; }
+    .empty-chat-text { font-size: 14px; }
+
+    .loading-spinner {
+      width: 24px; height: 24px;
+      border: 2px solid var(--border);
+      border-top-color: var(--green);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 40px auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Bottom nav */
+    .bottom-nav {
+      display: flex;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+      flex-shrink: 0;
+    }
+    .nav-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 10px;
+      cursor: pointer;
+      padding: 4px 0;
+    }
+    .nav-btn svg { width: 22px; height: 22px; }
+    .nav-btn.active { color: var(--green); }
+    .nav-btn.active svg { stroke: var(--green); }
+  </style>
+</head>
+<body>
+
+  <header class="chat-header">
+    <div class="chat-header-left">
+      <button class="chat-back" onclick="window.location.href='dashboard.html'">←</button>
+      <div>
+        <div class="chat-title" id="chat-title">League Chat</div>
+        <div class="chat-sub"><span class="online-dot"></span><span id="member-count">Loading...</span></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="chat-messages" id="chat-messages">
+    <div class="loading-spinner"></div>
+  </div>
+
+  <div class="chat-input-bar">
+    <textarea class="chat-input" id="chat-input" placeholder="Message..." rows="1"
+      oninput="autoResize(this)" onkeydown="handleKey(event)"></textarea>
+    <button class="send-btn" id="send-btn" onclick="sendMessage()" disabled>
+      <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
+    </button>
+  </div>
+
+  <nav class="bottom-nav">
+    <button class="nav-btn" onclick="window.location.href='dashboard.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>Home</span>
+    </button>
+    <button class="nav-btn" onclick="window.location.href='predict.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+      <span>Predict</span>
+    </button>
+    <button class="nav-btn" onclick="window.location.href='leaderboard.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+      <span>Board</span>
+    </button>
+    <button class="nav-btn active" onclick="window.location.href='chat.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span>Chat</span>
+    </button>
+    <button class="nav-btn" onclick="window.location.href='profile.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span>Profile</span>
+    </button>
+  </nav>
+
+  <script type="module" src="js/chat.js"></script>
+</body>
+</html>
