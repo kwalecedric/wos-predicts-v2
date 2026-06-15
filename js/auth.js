@@ -4,7 +4,8 @@ import {
   signInWithPopup,
   onAuthStateChanged,
   sendPasswordResetEmail,
-  updateProfile
+  updateProfile,
+  GoogleAuthProvider
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 
 import {
@@ -13,10 +14,36 @@ import {
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
-import {
-  auth, db, googleProvider,
-  COLLECTIONS, ROLES, STATUS, SUPER_ADMIN_UID, DEFAULT_LEAGUE_ID
-} from "./firebase-config.js?v=2";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+// ── HARDCODED CONFIG ──────────────────────────────────────────
+const firebaseConfig = {
+  apiKey:            "AIzaSyCNq_TwRzwE8To7U5S-HLl3F-ulrSwbt-I",
+  authDomain:        "wos-predicts-v2.firebaseapp.com",
+  projectId:         "wos-predicts-v2",
+  storageBucket:     "wos-predicts-v2.firebasestorage.app",
+  messagingSenderId: "905164458982",
+  appId:             "1:905164458992:web:722707c56fddc291b82427"
+};
+
+const app           = initializeApp(firebaseConfig);
+const auth          = getAuth(app);
+const db            = getFirestore(app);
+const googleProvider = new GoogleAuthProvider();
+
+const SUPER_ADMIN_UID  = "IOtm7kRMqyZyaI305psKs4yJxMZ2";
+const DEFAULT_LEAGUE_ID = "GoQywLIG0V4oWGvl8yRQ";
+
+const COLLECTIONS = {
+  users:   "users",
+  leagues: "leagues",
+  picks:   "picks",
+};
+
+const STATUS = { pending: "pending", approved: "approved", rejected: "rejected" };
+const ROLES  = { player: "player", subAdmin: "sub_admin", owner: "owner" };
 
 // ── SCREEN MANAGER ────────────────────────────────────────────
 function showScreen(id) {
@@ -36,16 +63,17 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
-  try {
-    const userRef  = doc(db, COLLECTIONS.users, user.uid);
-    const userSnap = await getDoc(userRef);
+  console.log('Auth fired. UID:', user.uid);
+  console.log('Is super admin:', user.uid === SUPER_ADMIN_UID);
 
-    // Super admin — bypass everything
-    if (user.uid === SUPER_ADMIN_UID) {
-      sessionStorage.setItem('activeLeagueId', DEFAULT_LEAGUE_ID);
-      window.location.href = 'dashboard.html';
-      return;
-    }
+  if (user.uid === SUPER_ADMIN_UID) {
+    sessionStorage.setItem('activeLeagueId', DEFAULT_LEAGUE_ID);
+    window.location.href = 'dashboard.html';
+    return;
+  }
+
+  try {
+    const userSnap = await getDoc(doc(db, 'users', user.uid));
 
     if (!userSnap.exists()) {
       clearLoadingState();
@@ -89,9 +117,8 @@ onAuthStateChanged(auth, async (user) => {
 
 // ── CREATE USER PROFILE ───────────────────────────────────────
 async function createUserProfile(user, displayName) {
-  const userRef  = doc(db, COLLECTIONS.users, user.uid);
+  const userRef  = doc(db, 'users', user.uid);
   const userSnap = await getDoc(userRef);
-
   await setDoc(userRef, {
     uid:          user.uid,
     displayName:  displayName || user.displayName || 'Player',
@@ -189,7 +216,7 @@ async function joinLeague() {
   btn.classList.add('loading');
 
   try {
-    const q    = query(collection(db, COLLECTIONS.leagues), where('code', '==', code));
+    const q    = query(collection(db, 'leagues'), where('code', '==', code));
     const snap = await getDocs(q);
 
     if (snap.empty) {
@@ -214,9 +241,7 @@ async function joinLeague() {
       return;
     }
 
-    const user    = auth.currentUser;
-    const userRef = doc(db, COLLECTIONS.users, user.uid);
-
+    const userRef = doc(db, 'users', auth.currentUser.uid);
     await updateDoc(userRef, {
       [`leagues.${leagueId}`]: {
         status:    STATUS.pending,
