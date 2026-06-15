@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WOS PREDICTS — Admin</title>
+  <link rel="stylesheet" href="css/global.css">
+  <style>
+    .admin-header {
+      background: var(--surface);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .admin-title { color: var(--text); font-size: 18px; font-weight: 700; }
+    .admin-badge {
+      background: var(--green);
+      color: #000;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 20px;
+      letter-spacing: 1px;
+    }
+    .admin-main { padding: 20px; max-width: 600px; margin: 0 auto; padding-bottom: 40px; }
+    .admin-section {
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+    }
+    .admin-section-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .player-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .player-row:last-child { border-bottom: none; }
+    .player-info { display: flex; flex-direction: column; gap: 2px; }
+    .player-name { color: var(--text); font-size: 14px; font-weight: 600; }
+    .player-email { color: var(--text-muted); font-size: 12px; }
+    .player-status {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 20px;
+      text-transform: uppercase;
+    }
+    .status-pending  { background: rgba(255,179,0,0.15);  color: var(--amber); }
+    .status-approved { background: rgba(0,230,118,0.15);  color: var(--green); }
+    .status-rejected { background: rgba(255,107,107,0.15); color: var(--red);  }
+    .player-actions { display: flex; gap: 8px; align-items: center; }
+    .btn-approve {
+      background: var(--green);
+      color: #000;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-reject {
+      background: transparent;
+      color: var(--red);
+      border: 1px solid var(--red);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-remove {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .match-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+    }
+    .match-row:last-child { border-bottom: none; }
+    .match-teams { color: var(--text); font-size: 13px; font-weight: 600; flex: 1; }
+    .match-time  { color: var(--text-muted); font-size: 11px; margin-top: 2px; }
+    .score-inputs { display: flex; align-items: center; gap: 6px; }
+    .score-box {
+      width: 44px;
+      padding: 6px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 700;
+      text-align: center;
+    }
+    .score-dash { color: var(--text-muted); font-weight: 700; }
+    .btn-save-result {
+      background: var(--green);
+      color: #000;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn-save-result:disabled { opacity: 0.5; cursor: not-allowed; }
+    .result-saved { color: var(--green); font-size: 12px; font-weight: 700; }
+    .empty-state { color: var(--text-muted); text-align: center; padding: 24px; font-size: 14px; }
+    .loading-spinner {
+      width: 24px; height: 24px;
+      border: 2px solid var(--border);
+      border-top-color: var(--green);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 24px auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .back-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .league-info {
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .league-info-name { color: var(--text); font-size: 16px; font-weight: 700; }
+    .league-info-code { color: var(--green); font-size: 13px; font-weight: 700; letter-spacing: 2px; }
+    .league-info-sub  { color: var(--text-muted); font-size: 12px; margin-top: 2px; }
+    .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .tab-btn.active {
+      background: var(--green);
+      color: #000;
+      border-color: var(--green);
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--surface);
+      color: var(--text);
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      border: 1px solid var(--border);
+      z-index: 999;
+    }
+    .toast.show { opacity: 1; }
+    .toast.success { border-color: var(--green); color: var(--green); }
+    .toast.error   { border-color: var(--red);   color: var(--red);   }
+  </style>
+</head>
+<body>
+
+  <header class="admin-header">
+    <button class="back-btn" onclick="window.location.href='dashboard.html'">
+      ← Back
+    </button>
+    <div class="admin-title">Admin Panel</div>
+    <span class="admin-badge">ADMIN</span>
+  </header>
+
+  <main class="admin-main">
+
+    <!-- LEAGUE INFO -->
+    <div class="league-info" id="league-info">
+      <div>
+        <div class="league-info-name" id="league-info-name">Loading...</div>
+        <div class="league-info-sub" id="league-info-sub"></div>
+      </div>
+      <div class="league-info-code" id="league-info-code"></div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('players')">👥 Players</button>
+      <button class="tab-btn" onclick="switchTab('results')">⚽ Results</button>
+    </div>
+
+    <!-- PLAYERS TAB -->
+    <div class="tab-panel active" id="tab-players">
+      <div class="admin-section">
+        <div class="admin-section-title">⏳ Pending approval</div>
+        <div id="pending-list"><div class="loading-spinner"></div></div>
+      </div>
+      <div class="admin-section">
+        <div class="admin-section-title">✅ Approved players</div>
+        <div id="approved-list"><div class="loading-spinner"></div></div>
+      </div>
+    </div>
+
+    <!-- RESULTS TAB -->
+    <div class="tab-panel" id="tab-results">
+      <div class="admin-section">
+        <div class="admin-section-title">📅 Today's matches — enter results</div>
+        <div id="results-list"><div class="loading-spinner"></div></div>
+      </div>
+    </div>
+
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script type="module" src="js/admin.js"></script>
+</body>
+</html>
