@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WOS PREDICTS — Dashboard</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <header class="top-bar">
+    <div class="logo-wrap">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 2c1.47 0 2.86.4 4.06 1.09l-1.56 4.8-2.5-.82-2.5.82-1.56-4.8A7.96 7.96 0 0 1 12 4zm-6.6 3.37 1.65 5.08-2.3 3.17A8.02 8.02 0 0 1 4 12c0-1.74.56-3.35 1.4-4.63zm13.2 0A7.95 7.95 0 0 1 20 12c0 1.63-.49 3.15-1.34 4.41l-2.31-3.17 1.65-5.07zM9.19 11.19l2.31-.76v4.76l-3.77 2.74a8.01 8.01 0 0 1-2.5-4.11l2.71-3.73.75 1.1zm5.62 0 .75-1.1 2.71 3.73a8.01 8.01 0 0 1-2.5 4.11L12 15.19v-4.76l2.31.76zm-2.81 6v-2.57l2.39 1.73-2.39.84zm0 0-2.39-.84 2.39-1.73v2.57z"/>
+        </svg>
+      </div>
+      <div class="logo-text">WOS <span>PREDICTS</span></div>
+    </div>
+    <button class="notif-btn" onclick="window.location.href='notifications.html'" aria-label="Notifications">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+      </svg>
+      <span class="notif-dot" id="notif-dot"></span>
+    </button>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+
+    <!-- WELCOME SECTION -->
+    <section class="welcome-section">
+      <div class="welcome-text">
+        <div class="welcome-greeting" id="greeting">Hey there 👋</div>
+        <div class="welcome-sub" id="competition-name">Loading competition...</div>
+      </div>
+      <div class="avatar" id="user-avatar">?</div>
+    </section>
+
+    <!-- STATS ROW -->
+    <section class="stats-row">
+      <div class="stat-card">
+        <div class="stat-val green" id="stat-rank">—</div>
+        <div class="stat-label">Rank</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="stat-points">—</div>
+        <div class="stat-label">Points</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val amber" id="stat-streak">—</div>
+        <div class="stat-label">Streak 🔥</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val purple" id="stat-wildcards">—</div>
+        <div class="stat-label">Wildcards 🃏</div>
+      </div>
+    </section>
+
+    <!-- STREAK BANNER — only shows if streak >= 3 -->
+    <div class="streak-banner" id="streak-banner" style="display:none;">
+      🔥 <span id="streak-banner-text"></span>
+    </div>
+
+    <!-- LATEST NOTIFICATION -->
+    <div class="notif-banner" id="notif-banner" style="display:none;">
+      <span class="notif-banner-icon">📢</span>
+      <span class="notif-banner-text" id="notif-banner-text"></span>
+    </div>
+
+    <!-- TODAY'S MATCHES -->
+    <section class="matches-section">
+      <div class="section-header">
+        <div class="section-eyebrow">Today's fixtures</div>
+        <div class="match-date" id="match-date"></div>
+      </div>
+      <div id="matches-list">
+        <!-- Match cards injected by JS -->
+        <div class="loading-state">
+          <div class="loading-spinner"></div>
+          <div class="loading-text">Loading fixtures...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- UPCOMING MATCHES -->
+    <section class="matches-section" id="upcoming-section" style="display:none;">
+      <div class="section-header">
+        <div class="section-eyebrow">Coming up next</div>
+      </div>
+      <div id="upcoming-list"></div>
+    </section>
+
+  </main>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" onclick="window.location.href='dashboard.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+      <span>Home</span>
+    </button>
+    <button class="nav-btn" onclick="window.location.href='predict.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
+      </svg>
+      <span>Predict</span>
+    </button>
+    <button class="nav-btn" onclick="window.location.href='leaderboard.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
+      </svg>
+      <span>Board</span>
+    </button>
+    <button class="nav-btn" onclick="window.location.href='chat.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+      <span>Chat</span>
+    </button>
+    <button class="nav-btn" onclick="window.location.href='profile.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+      </svg>
+      <span>Profile</span>
+    </button>
+  </nav>
+
+  <!-- PREDICT MODAL (bottom sheet) -->
+  <div class="modal-overlay" id="modal-overlay" onclick="closeModal()"></div>
+  <div class="predict-modal" id="predict-modal">
+
+    <div class="modal-handle"></div>
+
+    <div class="modal-match-header" id="modal-match-header">
+      <!-- Populated by JS -->
+    </div>
+
+    <div class="modal-countdown" id="modal-countdown"></div>
+
+    <div class="modal-section-label">Choose your prediction</div>
+
+    <!-- PICK OPTIONS GRID -->
+    <div class="picks-grid" id="picks-grid">
+      <div class="pick-option" data-pick="home_win">
+        <span class="pick-name" id="pick-home-label">Home win</span>
+        <span class="pick-pts">3 pts</span>
+      </div>
+      <div class="pick-option" data-pick="draw">
+        <span class="pick-name">Draw</span>
+        <span class="pick-pts">4 pts</span>
+      </div>
+      <div class="pick-option" data-pick="away_win">
+        <span class="pick-name" id="pick-away-label">Away win</span>
+        <span class="pick-pts">3 pts</span>
+      </div>
+      <div class="pick-option" data-pick="correct_score">
+        <span class="pick-name">Exact score</span>
+        <span class="pick-pts">6–7 pts</span>
+      </div>
+      <div class="pick-option" data-pick="five_yellows">
+        <span class="pick-name">5+ yellows</span>
+        <span class="pick-pts">5 pts</span>
+      </div>
+      <div class="pick-option" data-pick="red_card">
+        <span class="pick-name">Red card</span>
+        <span class="pick-pts">7 pts</span>
+      </div>
+      <div class="pick-option" data-pick="motm">
+        <span class="pick-name">MOTM</span>
+        <span class="pick-pts">10 pts</span>
+      </div>
+      <div class="pick-option" data-pick="prolongation">
+        <span class="pick-name">Extra time</span>
+        <span class="pick-pts">10 pts</span>
+      </div>
+      <div class="pick-option" data-pick="penalties">
+        <span class="pick-name">Penalties</span>
+        <span class="pick-pts">10 pts</span>
+      </div>
+    </div>
+
+    <!-- SCORE INPUT — shown only when exact score is selected -->
+    <div class="score-input-wrap" id="score-input-wrap" style="display:none;">
+      <div class="score-input-row">
+        <div class="score-team-label" id="score-home-label">Home</div>
+        <input type="number" class="score-input" id="score-home" min="0" max="20" placeholder="0">
+        <span class="score-dash">—</span>
+        <input type="number" class="score-input" id="score-away" min="0" max="20" placeholder="0">
+        <div class="score-team-label" id="score-away-label">Away</div>
+      </div>
+    </div>
+
+    <!-- MOTM INPUT — shown only when MOTM is selected -->
+    <div class="motm-input-wrap" id="motm-input-wrap" style="display:none;">
+      <input type="text" class="form-input" id="motm-player" placeholder="Enter player name e.g. Jonathan David">
+    </div>
+
+    <!-- WILDCARD TOGGLE -->
+    <div class="wildcard-row">
+      <div class="wildcard-info">
+        <span class="wildcard-icon">🃏</span>
+        <div>
+          <div class="wildcard-title">Use wildcard</div>
+          <div class="wildcard-sub">Doubles your points if correct</div>
+        </div>
+      </div>
+      <div class="toggle" id="wildcard-toggle" onclick="toggleWildcard()">
+        <div class="toggle-knob"></div>
+      </div>
+    </div>
+
+    <!-- LOCK IN BUTTON -->
+    <button class="btn-primary submit-btn" id="lock-in-btn" onclick="lockInPick()">
+      <span class="btn-text">Lock in pick</span>
+      <div class="spinner"></div>
+    </button>
+
+  </div>
+  <!-- /PREDICT MODAL -->
+
+  <div class="toast" id="toast"></div>
+
+  <script type="module" src="js/dashboard.js"></script>
+</body>
+</html>

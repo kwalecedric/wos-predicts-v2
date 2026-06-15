@@ -1,0 +1,202 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  --navy:       #0D1B2A;
+  --navy2:      #152536;
+  --navy3:      #1E3248;
+  --green:      #00E676;
+  --green-dim:  #00C264;
+  --green-glow: rgba(0,230,118,0.12);
+  --amber:      #FFB300;
+  --red:        #FF4444;
+  --text:       #F0F4F8;
+  --text-dim:   #8BA0B4;
+  --text-muted: #4A6480;
+  --border:     rgba(255,255,255,0.08);
+  --border-md:  rgba(255,255,255,0.14);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  min-height: 100vh;
+  background: var(--navy);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(16px);
+  background: var(--navy3);
+  border: 1px solid var(--border-md);
+  border-radius: 10px;
+  padding: 11px 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  opacity: 0;
+  transition: all 0.3s;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 999;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast.success { border-color: var(--green); color: var(--green); }
+.toast.error   { border-color: var(--red);   color: var(--red);   }
+
+/* ── BUTTONS ── */
+.btn-primary {
+  background: var(--green);
+  color: var(--navy);
+  border: none;
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Barlow Condensed', sans-serif;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.btn-primary:hover  { background: var(--green-dim); transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0) scale(0.98); }
+
+.btn-primary.loading { pointer-events: none; opacity: 0.7; }
+
+.btn-primary .spinner {
+  display: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(13,27,42,0.3);
+  border-top-color: var(--navy);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin: 0 auto;
+}
+
+.btn-primary.loading .btn-text    { display: none; }
+.btn-primary.loading .spinner     { display: block; }
+
+/* ── FORM ELEMENTS ── */
+.form-group  { margin-bottom: 14px; }
+
+.form-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.form-input {
+  width: 100%;
+  background: var(--navy3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  padding: 12px 14px;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.form-input:focus {
+  border-color: var(--green);
+  background: rgba(0,230,118,0.03);
+}
+
+.form-input::placeholder { color: var(--text-muted); }
+
+.form-error {
+  font-size: 12px;
+  color: var(--red);
+  margin-top: 5px;
+  display: none;
+  font-weight: 500;
+}
+
+.form-error.show { display: block; }
+
+/* ── INPUT WITH EYE TOGGLE ── */
+.input-wrap { position: relative; }
+
+.input-wrap .form-input { padding-right: 44px; }
+
+.eye-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+
+.eye-btn:hover { color: var(--text-dim); }
+.eye-btn svg   { width: 18px; height: 18px; }
+
+/* ── LIVE DOT ── */
+.live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: blink 1.6s ease-in-out infinite;
+}
+
+/* ── SECTION LABEL ── */
+.section-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  margin-top: 20px;
+  padding-left: 2px;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 480px) {
+  body { font-size: 14px; }
+}
