@@ -55,3 +55,26 @@ export function generateLeagueCode() {
   }
   return code;
 }
+
+export function isSuperAdmin(email) {
+  return email === SUPER_ADMIN_EMAIL;
+}
+
+export function getUserLeagueRole(userDoc, leagueId) {
+  return userDoc?.leagues?.[leagueId]?.role || null;
+}
+
+export function getUserLeagueStatus(userDoc, leagueId) {
+  return userDoc?.leagues?.[leagueId]?.status || null;
+}
+
+export function isLeagueAdmin(userDoc, leagueId) {
+  const role = getUserLeagueRole(userDoc, leagueId);
+  return role === ROLES.owner || role === ROLES.subAdmin;
+}
+
+export function formatDate(timestamp) {
+  if (!timestamp) return '';
+  const d = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+}
