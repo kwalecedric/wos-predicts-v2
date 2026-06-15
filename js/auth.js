@@ -33,7 +33,7 @@ const auth          = getAuth(app);
 const db            = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
 
-const SUPER_ADMIN_UID  = "IOtm7kRMqyZyaI305psKs4yJxMZ2";
+const SUPER_ADMIN_EMAIL = "kwalecedric01@gmail.com";
 const DEFAULT_LEAGUE_ID = "GoQywLIG0V4oWGvl8yRQ";
 
 const COLLECTIONS = {
@@ -64,13 +64,11 @@ onAuthStateChanged(auth, async (user) => {
   }
 
   console.log('Auth fired. UID:', user.uid);
-  console.log('Is super admin:', user.uid === SUPER_ADMIN_UID);
-
-  if (user.uid === SUPER_ADMIN_UID) {
-    sessionStorage.setItem('activeLeagueId', DEFAULT_LEAGUE_ID);
-    window.location.href = 'dashboard.html';
-    return;
-  }
+ if (user.email === SUPER_ADMIN_EMAIL) {
+  sessionStorage.setItem('activeLeagueId', DEFAULT_LEAGUE_ID);
+  window.location.href = 'dashboard.html';
+  return;
+}
 
   try {
     const userSnap = await getDoc(doc(db, 'users', user.uid));
