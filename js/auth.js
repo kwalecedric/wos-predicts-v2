@@ -16,7 +16,7 @@ import {
 import {
   auth, db, googleProvider,
   COLLECTIONS, ROLES, STATUS, SUPER_ADMIN_UID, DEFAULT_LEAGUE_ID
-} from "./firebase-config.js";
+} from "./firebase-config.js?v=2";
 
 // ── SCREEN MANAGER ────────────────────────────────────────────
 function showScreen(id) {
