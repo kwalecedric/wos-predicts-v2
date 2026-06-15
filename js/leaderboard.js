@@ -25,7 +25,7 @@ onAuthStateChanged(auth, async (user) => {
   if (!activeLeagueId) { window.location.href = "index.html"; return; }
 
   // Verify user is approved
-  if (!isSuperAdmin(user.uid)) {
+if (isSuperAdmin(user.email)) {
     const userRef  = doc(db, COLLECTIONS.users, user.uid);
     const userSnap = await getDoc(userRef);
     if (!userSnap.exists()) { window.location.href = "index.html"; return; }
