@@ -37,6 +37,7 @@ onAuthStateChanged(auth, async (user) => {
     activeLeagueId = sessionStorage.getItem('activeLeagueId') || 'GoQywLIG0V4oWGvl8yRQ';
     sessionStorage.setItem('activeLeagueId', activeLeagueId);
     await init();
+    document.getElementById('admin-btn').style.display = 'flex';
     return;
   }
 
