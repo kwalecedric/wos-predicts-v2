@@ -17,7 +17,7 @@ export const auth           = getAuth(app);
 export const db             = getFirestore(app);
 export const googleProvider = new GoogleAuthProvider();
 
-export const SUPER_ADMIN_UID  = "IOtm7kRMqyZyaI305psKs4yJxMZ2";
+export const SUPER_ADMIN_EMAIL = "kwalecedric01@gmail.com";
 export const DEFAULT_LEAGUE_ID = "GoQywLIG0V4oWGvl8yRQ";
 
 export const RAPIDAPI_KEY  = "be356bced3msh57c6ef63b89280ap113f79jsn40f7e7727aa3";
