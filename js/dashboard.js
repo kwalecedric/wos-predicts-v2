@@ -33,7 +33,7 @@ onAuthStateChanged(auth, async (user) => {
   }
   currentUser = user;
 
-  if (isSuperAdmin(user.uid)) {
+  if (isSuperAdmin(user.email)) {
     activeLeagueId = sessionStorage.getItem('activeLeagueId') || 'GoQywLIG0V4oWGvl8yRQ';
     sessionStorage.setItem('activeLeagueId', activeLeagueId);
     await init();
