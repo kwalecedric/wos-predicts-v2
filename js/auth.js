@@ -5,7 +5,7 @@ import {
   onAuthStateChanged,
   sendPasswordResetEmail,
   updateProfile,
-  GoogleAuthProvider
+  signOut
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 
 import {
@@ -313,6 +313,10 @@ function showToast(msg, type) {
   window._toast = setTimeout(() => t.classList.remove('show'), 3000);
 }
 
+window.signOutUser = async function() {
+  await signOut(auth);
+  window.location.reload();
+};
 // ── EXPOSE TO HTML ────────────────────────────────────────────
 window.handleSignIn  = handleSignIn;
 window.handleSignUp  = handleSignUp;
