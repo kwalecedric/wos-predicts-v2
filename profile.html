@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WOS PREDICTS — Profile</title>
+  <link rel="stylesheet" href="css/global.css">
+  <style>
+    .main { padding: 16px 16px 100px; max-width: 600px; margin: 0 auto; }
+
+    .profile-hero {
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 28px 20px;
+      text-align: center;
+      border: 1px solid var(--border);
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .profile-avatar {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      font-size: 28px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px;
+      color: #000;
+    }
+    .profile-name {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .profile-email {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .profile-badges {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .badge {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .badge.green { border-color: var(--green); color: var(--green); }
+    .badge.amber { border-color: var(--amber); color: var(--amber); }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+    }
+    .stat-val {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .stat-val.green  { color: var(--green); }
+    .stat-val.amber  { color: var(--amber); }
+    .stat-val.purple { color: var(--purple, #ba68c8); }
+    .stat-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+    }
+
+    .history-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .history-row:last-child { border-bottom: none; }
+    .history-result { font-size: 18px; flex-shrink: 0; }
+    .history-info { flex: 1; min-width: 0; }
+    .history-match {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .history-pick { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .history-pts {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--green);
+      flex-shrink: 0;
+    }
+    .history-pts.zero { color: var(--text-muted); }
+
+    .signout-btn {
+      width: 100%;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: border-color 0.2s;
+      margin-bottom: 16px;
+    }
+    .signout-btn:hover { border-color: var(--red, #ff6b6b); color: var(--red, #ff6b6b); }
+
+    .empty-state {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+      padding: 24px 0;
+    }
+    .loading-spinner {
+      width: 24px; height: 24px;
+      border: 2px solid var(--border);
+      border-top-color: var(--green);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 24px auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .top-bar {
+      background: var(--surface);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .top-bar-title { color: var(--text); font-size: 16px; font-weight: 700; }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      display: flex;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+      z-index: 10;
+    }
+    .nav-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 10px;
+      cursor: pointer;
+      padding: 4px 0;
+    }
+    .nav-btn svg { width: 22px; height: 22px; }
+    .nav-btn.active { color: var(--green); }
+    .nav-btn.active svg { stroke: var(--green); }
+
+    .toast {
+      position: fixed;
+      bottom: 80px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--surface);
+      color: var(--text);
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      border: 1px solid var(--border);
+      z-index: 999;
+    }
+    .toast.show { opacity: 1; }
+    .toast.success { border-color: var(--green); color: var(--green); }
+    .toast.error   { border-color: var(--red, #ff6b6b); color: var(--red, #ff6b6b); }
+  </style>
+</head>
+<body>
+
+  <header class="top-bar">
+    <div class="top-bar-title">My Profile</div>
+  </header>
+
+  <main class="main">
+
+    <!-- PROFILE HERO -->
+    <div class="profile-hero">
+      <div class="profile-avatar" id="profile-avatar">?</div>
+      <div class="profile-name"  id="profile-name">Loading...</div>
+      <div class="profile-email" id="profile-email"></div>
+      <div class="profile-badges" id="profile-badges"></div>
+    </div>
+
+    <!-- STATS GRID -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-val green" id="stat-points">—</div>
+        <div class="stat-label">Points</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="stat-rank">—</div>
+        <div class="stat-label">Rank</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val amber" id="stat-accuracy">—</div>
+        <div class="stat-label">Accuracy</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val purple" id="stat-streak">—</div>
+        <div class="stat-label">Streak 🔥</div>
+      </div>
+    </div>
+
+    <!-- WILDCARDS -->
+    <div class="section">
+      <div class="section-title">🃏 Wildcards remaining</div>
+      <div style="display:flex;gap:8px;" id="wildcards-display"></div>
+    </div>
+
+    <!-- PREDICTION HISTORY -->
+    <div class="section">
+      <div class="section-title">📋 Prediction history</div>
+      <div id="history-list"><div class="loading-spinner"></div></div>
+    </div>
+
+    <!-- SIGN OUT -->
+    <button class="signout-btn" onclick="handleSignOut()">Sign out</button>
+
+  </main>
+
+  <nav class="bottom-nav">
+    <button class="nav-btn" onclick="window.location.href='dashboard.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>Home</span>
+    </button>
+    <button class="nav-btn" onclick="window.location.href='predict.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+      <span>Predict</span>
+    </button>
+    <button class="nav-btn" onclick="window.location.href='leaderboard.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+      <span>Board</span>
+    </button>
+    <button class="nav-btn" onclick="window.location.href='chat.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span>Chat</span>
+    </button>
+    <button class="nav-btn active" onclick="window.location.href='profile.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span>Profile</span>
+    </button>
+  </nav>
+
+  <div class="toast" id="toast"></div>
+
+  <script type="module" src="js/profile.js"></script>
+</body>
+</html>
