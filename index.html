@@ -21,11 +21,11 @@
 
       <div class="auth-card">
         <div class="auth-tabs">
-          <button class="auth-tab active" id="tab-signin" onclick="switchAuthTab('signin')">Sign in</button>
-          <button class="auth-tab" id="tab-signup" onclick="switchAuthTab('signup')">Create account</button>
+          <button class="auth-tab active" id="tab-signin" onclick="window.switchAuthTab && window.switchAuthTab('signin')">Sign in</button>
+          <button class="auth-tab" id="tab-signup" onclick="window.switchAuthTab && window.switchAuthTab('signup')">Create account</button>
         </div>
 
-        <button class="google-btn" onclick="if(window.googleAuth) googleAuth(); else location.reload()">
+        <button class="google-btn" id="google-btn">
           <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 6.293C4.672 4.166 6.656 3.58 9 3.58z"/></svg>
           Continue with Google
         </button>
@@ -36,46 +36,46 @@
         <div id="form-signin" style="display:block">
           <div class="form-group">
             <label class="form-label">EMAIL</label>
-            <input type="email" id="signin-email" class="form-input" placeholder="your@email.com">
+            <input type="email" id="signin-email" class="form-input" placeholder="your@email.com" autocomplete="email">
             <span class="form-error" id="signin-email-err"></span>
           </div>
           <div class="form-group">
             <label class="form-label">PASSWORD</label>
             <div class="input-wrap">
-              <input type="password" id="signin-password" class="form-input" placeholder="••••••••">
-              <button class="pwd-toggle" onclick="togglePwd('signin-password', this)" tabindex="-1">
+              <input type="password" id="signin-password" class="form-input" placeholder="••••••••" autocomplete="current-password">
+              <button class="pwd-toggle" id="toggle-signin-pwd" tabindex="-1">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
               </button>
             </div>
             <span class="form-error" id="signin-pass-err"></span>
           </div>
-          <button class="submit-btn" onclick="if(window.handleSignIn) handleSignIn(); else location.reload()">Sign in</button>
-          <button class="forgot-btn" onclick="showForgot()">Forgot password?</button>
+          <button class="submit-btn" id="signin-submit-btn">Sign in</button>
+          <button class="forgot-btn" id="forgot-btn">Forgot password?</button>
         </div>
 
         <!-- SIGN UP FORM -->
         <div id="form-signup" style="display:none">
           <div class="form-group">
             <label class="form-label">YOUR NAME</label>
-            <input type="text" id="signup-name" class="form-input" placeholder="e.g. Cedric">
+            <input type="text" id="signup-name" class="form-input" placeholder="e.g. Cedric" autocomplete="name">
             <span class="form-error" id="signup-name-err"></span>
           </div>
           <div class="form-group">
             <label class="form-label">EMAIL</label>
-            <input type="email" id="signup-email" class="form-input" placeholder="your@email.com">
+            <input type="email" id="signup-email" class="form-input" placeholder="your@email.com" autocomplete="email">
             <span class="form-error" id="signup-email-err"></span>
           </div>
           <div class="form-group">
             <label class="form-label">PASSWORD</label>
             <div class="input-wrap">
-              <input type="password" id="signup-password" class="form-input" placeholder="Min 8 characters">
-              <button class="pwd-toggle" onclick="togglePwd('signup-password', this)" tabindex="-1">
+              <input type="password" id="signup-password" class="form-input" placeholder="Min 8 characters" autocomplete="new-password">
+              <button class="pwd-toggle" id="toggle-signup-pwd" tabindex="-1">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
               </button>
             </div>
             <span class="form-error" id="signup-pass-err"></span>
           </div>
-          <button class="submit-btn" onclick="if(window.handleSignUp) handleSignUp(); else location.reload()">Create account</button>
+          <button class="submit-btn" id="signup-submit-btn">Create account</button>
         </div>
       </div>
 
@@ -95,14 +95,14 @@
         <p class="join-sub">Enter the invite code from your group admin</p>
         <div class="form-group">
           <label class="form-label">LEAGUE CODE</label>
-          <input type="text" id="league-code-input" class="form-input" placeholder="E.G. SQVB-7K2M" maxlength="9">
+          <input type="text" id="league-code-input" class="form-input" placeholder="E.G. SQVB-7K2M" maxlength="9" autocomplete="off">
           <span class="form-error" id="league-code-err"></span>
         </div>
-        <button class="submit-btn" id="join-league-btn" onclick="joinLeague()">JOIN LEAGUE</button>
+        <button class="submit-btn" id="join-league-btn">JOIN LEAGUE</button>
+        <button id="signout-btn" style="display:block;width:100%;margin-top:12px;background:none;border:none;color:var(--text-muted);font-size:13px;cursor:pointer;font-family:inherit;">
+          ← Sign out / Switch account
+        </button>
       </div>
-      <button onclick="window.signOutUser()" style="display:block;width:100%;margin-top:12px;background:none;border:none;color:var(--text-muted);font-size:13px;cursor:pointer;font-family:inherit;">
-  ← Sign out / Switch account
-</button>
     </div>
   </div>
 
@@ -130,6 +130,6 @@
 
   <div id="toast" class="toast"></div>
 
-  <script type="module" src="js/auth.js?v=3"></script>
+  <script type="module" src="js/auth.js?v=4"></script>
 </body>
 </html>
