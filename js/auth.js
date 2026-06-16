@@ -327,15 +327,17 @@ window.switchAuthTab = switchAuthTab;
 window.togglePwd     = togglePwd;
 
 // ── ATTACH BUTTON LISTENERS ───────────────────────────────────
-document.getElementById('signin-submit-btn')?.addEventListener('click', handleSignIn);
-document.getElementById('signup-submit-btn')?.addEventListener('click', handleSignUp);
-document.getElementById('google-btn')?.addEventListener('click', googleAuth);
-document.getElementById('forgot-btn')?.addEventListener('click', showForgot);
-document.getElementById('join-league-btn')?.addEventListener('click', joinLeague);
-document.getElementById('signout-btn')?.addEventListener('click', signOutUser);
-document.getElementById('toggle-signin-pwd')?.addEventListener('click', () => togglePwd('signin-password', document.getElementById('toggle-signin-pwd')));
-document.getElementById('toggle-signup-pwd')?.addEventListener('click', () => togglePwd('signup-password', document.getElementById('toggle-signup-pwd')));
-
+// ── ATTACH BUTTON LISTENERS ───────────────────────────────────
+window.addEventListener('load', () => {
+  document.getElementById('signin-submit-btn')?.addEventListener('click', handleSignIn);
+  document.getElementById('signup-submit-btn')?.addEventListener('click', handleSignUp);
+  document.getElementById('google-btn')?.addEventListener('click', googleAuth);
+  document.getElementById('forgot-btn')?.addEventListener('click', showForgot);
+  document.getElementById('join-league-btn')?.addEventListener('click', joinLeague);
+  document.getElementById('signout-btn')?.addEventListener('click', signOutUser);
+  document.getElementById('toggle-signin-pwd')?.addEventListener('click', () => togglePwd('signin-password', document.getElementById('toggle-signin-pwd')));
+  document.getElementById('toggle-signup-pwd')?.addEventListener('click', () => togglePwd('signup-password', document.getElementById('toggle-signup-pwd')));
+});
 document.addEventListener('keydown', e => {
   if (e.key !== 'Enter') return;
   const active = document.querySelector('.auth-screen[style*="block"]');
