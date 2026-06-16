@@ -1,10 +1,8 @@
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import {
   collection, addDoc, onSnapshot,
   query, orderBy, doc, updateDoc,
-  serverTimestamp
+  serverTimestamp, arrayUnion
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-
 import {
   auth, db, COLLECTIONS, isSuperAdmin
 } from "./firebase-config.js";
