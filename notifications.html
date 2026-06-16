@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WOS PREDICTS — Notifications</title>
+  <link rel="stylesheet" href="css/global.css">
+  <style>
+    .top-bar {
+      background: var(--surface);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .top-bar-left { display: flex; align-items: center; gap: 12px; }
+    .back-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 20px;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .top-bar-title { color: var(--text); font-size: 16px; font-weight: 700; }
+
+    .main { padding: 16px 16px 100px; max-width: 600px; margin: 0 auto; }
+
+    .notif-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .notif-card:hover { border-color: var(--green); }
+    .notif-card.unread { border-left: 3px solid var(--green); }
+
+    .notif-icon {
+      font-size: 24px;
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      background: var(--bg);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .notif-body { flex: 1; min-width: 0; }
+    .notif-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .notif-text {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 6px;
+    }
+    .notif-time {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .notif-dot {
+      width: 8px; height: 8px;
+      background: var(--green);
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+
+    /* Admin compose section */
+    .compose-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .compose-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 14px;
+    }
+    .compose-input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: var(--text);
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      margin-bottom: 10px;
+      transition: border-color 0.2s;
+    }
+    .compose-input:focus { border-color: var(--green); }
+    .compose-textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: var(--text);
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      resize: none;
+      min-height: 80px;
+      margin-bottom: 10px;
+      transition: border-color 0.2s;
+    }
+    .compose-textarea:focus { border-color: var(--green); }
+
+    .type-pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .type-pill {
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .type-pill.active {
+      background: var(--green);
+      color: #000;
+      border-color: var(--green);
+    }
+
+    .send-btn {
+      width: 100%;
+      background: var(--green);
+      color: #000;
+      border: none;
+      border-radius: 12px;
+      padding: 13px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .empty-state {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+      padding: 40px 0;
+    }
+    .empty-icon { font-size: 40px; margin-bottom: 12px; }
+
+    .loading-spinner {
+      width: 24px; height: 24px;
+      border: 2px solid var(--border);
+      border-top-color: var(--green);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 40px auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .toast {
+      position: fixed;
+      bottom: 24px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--surface);
+      color: var(--text);
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      border: 1px solid var(--border);
+      z-index: 999;
+    }
+    .toast.show    { opacity: 1; }
+    .toast.success { border-color: var(--green); color: var(--green); }
+    .toast.error   { border-color: var(--red, #ff6b6b); color: var(--red, #ff6b6b); }
+  </style>
+</head>
+<body>
+
+  <header class="top-bar">
+    <div class="top-bar-left">
+      <button class="back-btn" onclick="window.location.href='dashboard.html'">←</button>
+      <div class="top-bar-title">Announcements</div>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- ADMIN COMPOSE — only visible to admin -->
+    <div class="compose-card" id="compose-card" style="display:none;">
+      <div class="compose-title">📢 Send announcement</div>
+      <div class="type-pills" id="type-pills">
+        <button class="type-pill active" onclick="setType('info', this)">ℹ️ Info</button>
+        <button class="type-pill" onclick="setType('result', this)">⚽ Result</button>
+        <button class="type-pill" onclick="setType('warning', this)">⚠️ Warning</button>
+        <button class="type-pill" onclick="setType('celebrate', this)">🎉 Celebrate</button>
+      </div>
+      <input type="text" class="compose-input" id="notif-title-input" placeholder="Title e.g. Match Result: Spain 3-0">
+      <textarea class="compose-textarea" id="notif-body-input" placeholder="Message e.g. Congrats to all who picked Spain win! Points have been updated."></textarea>
+      <button class="send-btn" id="send-notif-btn" onclick="sendNotification()">Send to league</button>
+    </div>
+
+    <!-- NOTIFICATIONS LIST -->
+    <div id="notif-list">
+      <div class="loading-spinner"></div>
+    </div>
+
+  </main>
+
+  <div class="toast" id="toast"></div>
+  <script type="module" src="js/notifications.js"></script>
+</body>
+</html>
