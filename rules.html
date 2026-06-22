@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WOS PREDICTS — Rules</title>
+  <link rel="stylesheet" href="css/global.css">
+  <style>
+    .top-bar {
+      background: var(--surface);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .back-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 20px;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .top-bar-title { color: var(--text); font-size: 16px; font-weight: 700; }
+
+    .main { padding: 20px 16px 60px; max-width: 600px; margin: 0 auto; }
+
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .rule-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .rule-row:last-child { border-bottom: none; }
+    .rule-label { font-size: 14px; color: var(--text); font-weight: 500; }
+    .rule-pts {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--green);
+      background: rgba(0,230,118,0.1);
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+    .rule-pts.amber {
+      color: var(--amber);
+      background: rgba(255,179,0,0.1);
+    }
+    .rule-pts.purple {
+      color: var(--purple, #ba68c8);
+      background: rgba(186,104,200,0.1);
+    }
+
+    .faq-item {
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+    }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-question {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .faq-arrow {
+      color: var(--text-muted);
+      font-size: 12px;
+      flex-shrink: 0;
+      transition: transform 0.2s;
+    }
+    .faq-answer {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-top: 8px;
+      display: none;
+    }
+    .faq-item.open .faq-arrow { transform: rotate(180deg); }
+    .faq-item.open .faq-answer { display: block; }
+
+    .prize-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .prize-row:last-child { border-bottom: none; }
+    .prize-position { font-size: 14px; color: var(--text); font-weight: 600; }
+    .prize-amount {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--green);
+    }
+
+    .info-box {
+      background: rgba(0,230,118,0.06);
+      border: 1px solid rgba(0,230,118,0.2);
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-top: 12px;
+    }
+    .info-box strong { color: var(--text); }
+  </style>
+</head>
+<body>
+
+  <header class="top-bar">
+    <button class="back-btn" onclick="window.location.href='dashboard.html'">←</button>
+    <div class="top-bar-title">Rules & FAQs</div>
+  </header>
+
+  <main class="main">
+
+    <!-- SCORING RULES -->
+    <div class="section">
+      <div class="section-title">⚽ Scoring rules</div>
+
+      <div class="rule-row">
+        <div class="rule-label">Correct winner (Win/Draw)</div>
+        <div class="rule-pts">3–4 pts</div>
+      </div>
+      <div class="rule-row">
+        <div class="rule-label">Win + correct score</div>
+        <div class="rule-pts">6 pts</div>
+      </div>
+      <div class="rule-row">
+        <div class="rule-label">Draw + correct score</div>
+        <div class="rule-pts">7 pts</div>
+      </div>
+      <div class="rule-row">
+        <div class="rule-label">Red card in match</div>
+        <div class="rule-pts">7 pts</div>
+      </div>
+      <div class="rule-row">
+        <div class="rule-label">5+ yellow cards in match</div>
+        <div class="rule-pts amber">5 pts</div>
+      </div>
+      <div class="rule-row">
+        <div class="rule-label">Man of the Match (MOTM)</div>
+        <div class="rule-pts purple">10 pts</div>
+      </div>
+      <div class="rule-row">
+        <div class="rule-label">Extra time</div>
+        <div class="rule-pts purple">10 pts</div>
+      </div>
+      <div class="rule-row">
+        <div class="rule-label">Penalties</div>
+        <div class="rule-pts purple">10 pts</div>
+      </div>
+
+      <div class="info-box">
+        <strong>One pick per match.</strong> You must choose exactly one prediction option per fixture before kickoff. Once locked in, your pick cannot be changed.
+      </div>
+    </div>
+
+    <!-- WILDCARDS -->
+    <div class="section">
+      <div class="section-title">🃏 Wildcards</div>
+      <div class="rule-row">
+        <div class="rule-label">Wildcards per player</div>
+        <div class="rule-pts">3 total</div>
+      </div>
+      <div class="rule-row">
+        <div class="rule-label">Effect</div>
+        <div class="rule-pts">2× points</div>
+      </div>
+      <div class="info-box">
+        Activate a wildcard on any pick to <strong>double your points</strong> if correct. Wildcards are lost if your pick is wrong — use them wisely on high-confidence picks.
+      </div>
+    </div>
+
+    <!-- STREAK BONUS -->
+    <div class="section">
+      <div class="section-title">🔥 Streak bonus</div>
+      <div class="rule-row">
+        <div class="rule-label">3 correct picks in a row</div>
+        <div class="rule-pts">Next pick 2×</div>
+      </div>
+      <div class="info-box">
+        Get 3 correct predictions in a row and your <strong>next pick automatically doubles</strong> — no wildcard needed. The streak resets if you get one wrong.
+      </div>
+    </div>
+
+    <!-- PRIZE BREAKDOWN -->
+    <div class="section">
+      <div class="section-title">🏆 Prize breakdown — Squad WC 2026</div>
+      <div class="prize-row">
+        <div class="prize-position">🥇 1st Place</div>
+        <div class="prize-amount">$210</div>
+      </div>
+      <div class="prize-row">
+        <div class="prize-position">🥈 2nd Place</div>
+        <div class="prize-amount">$105</div>
+      </div>
+      <div class="prize-row">
+        <div class="prize-position">🥉 3rd Place</div>
+        <div class="prize-amount">$55</div>
+      </div>
+      <div class="prize-row">
+        <div class="prize-position">🏅 4th Place</div>
+        <div class="prize-amount">$35</div>
+      </div>
+      <div class="prize-row">
+        <div class="prize-position">🎖️ 5th Place</div>
+        <div class="prize-amount">$15</div>
+      </div>
+      <div class="info-box">
+        Total prize pool: <strong>$420</strong>. Prizes are paid out at the end of the competition based on final leaderboard standings.
+      </div>
+    </div>
+
+    <!-- FAQS -->
+    <div class="section">
+      <div class="section-title">❓ FAQs</div>
+
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-question">
+          When is the deadline to submit a pick?
+          <span class="faq-arrow">▼</span>
+        </div>
+        <div class="faq-answer">Picks must be submitted before the match kickoff time. Once the match starts, the predict button is locked and no changes can be made.</div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-question">
+          Can I change my pick after submitting?
+          <span class="faq-arrow">▼</span>
+        </div>
+        <div class="faq-answer">No. Once you lock in your pick it is final. Make sure you're confident before tapping "Lock in pick".</div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-question">
+          How does MOTM work?
+          <span class="faq-arrow">▼</span>
+        </div>
+        <div class="faq-answer">You pick a player you think will be named Man of the Match. If the official MOTM matches your player, you get 10 points. The admin confirms the result after the match.</div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-question">
+          What happens if a match is postponed?
+          <span class="faq-arrow">▼</span>
+        </div>
+        <div class="faq-answer">If a match is postponed or cancelled, all picks for that match are voided and no points are awarded. Your wildcard is returned if you used one.</div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-question">
+          How are points updated?
+          <span class="faq-arrow">▼</span>
+        </div>
+        <div class="faq-answer">Points are updated by the admin after each match result is confirmed. The leaderboard refreshes automatically once scoring is complete.</div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-question">
+          Can I be in multiple leagues?
+          <span class="faq-arrow">▼</span>
+        </div>
+        <div class="faq-answer">Yes. You can join multiple leagues using different league codes. Each league has its own separate leaderboard and prize pool.</div>
+      </div>
+
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-question">
+          What is the 5+ yellows pick?
+          <span class="faq-arrow">▼</span>
+        </div>
+        <div class="faq-answer">You're predicting that 5 or more yellow cards will be shown across both teams combined during the match. Worth 5 points if correct.</div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <script>
+    function toggleFaq(el) {
+      el.classList.toggle('open');
+    }
+  </script>
+</body>
+</html>
