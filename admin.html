@@ -227,10 +227,11 @@
     </div>
 
     <!-- TABS -->
-    <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('players')">👥 Players</button>
-      <button class="tab-btn" onclick="switchTab('results')">⚽ Results</button>
-    </div>
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('players')">👥 Players</button>
+  <button class="tab-btn" onclick="switchTab('results')">⚽ Results</button>
+  <button class="tab-btn" onclick="switchTab('leagues')">🏆 Leagues</button>
+</div>
 
     <!-- PLAYERS TAB -->
     <div class="tab-panel active" id="tab-players">
@@ -251,6 +252,48 @@
         <div id="results-list"><div class="loading-spinner"></div></div>
       </div>
     </div>
+
+    <!-- LEAGUES TAB -->
+<div class="tab-panel" id="tab-leagues">
+
+  <!-- CREATE NEW LEAGUE -->
+  <div class="admin-section">
+    <div class="admin-section-title">➕ Create new league</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <input type="text" id="new-league-name" placeholder="League name e.g. Squad Champions 2026"
+        style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-size:14px;font-family:inherit;outline:none;">
+      <input type="text" id="new-league-owner-email" placeholder="Owner email e.g. friend@gmail.com"
+        style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-size:14px;font-family:inherit;outline:none;">
+      <input type="number" id="new-league-prize" placeholder="Prize pool e.g. 420"
+        style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-size:14px;font-family:inherit;outline:none;">
+      <button class="btn-approve" style="width:100%;padding:13px;border-radius:10px;font-size:14px;"
+        onclick="createLeague()">
+        Generate league + code
+      </button>
+    </div>
+  </div>
+
+  <!-- ALL LEAGUES -->
+  <div class="admin-section">
+    <div class="admin-section-title">📋 All leagues</div>
+    <div id="all-leagues-list"><div class="loading-spinner"></div></div>
+  </div>
+
+  <!-- ROLE MANAGEMENT -->
+  <div class="admin-section">
+    <div class="admin-section-title">🎭 Manage roles</div>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">
+      Select a league first, then promote or demote players.
+    </p>
+    <select id="role-league-select"
+      style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-size:14px;font-family:inherit;outline:none;margin-bottom:12px;"
+      onchange="loadLeaguePlayers(this.value)">
+      <option value="">Select a league...</option>
+    </select>
+    <div id="role-players-list"></div>
+  </div>
+
+</div>
 
   </main>
 
