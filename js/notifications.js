@@ -1,3 +1,4 @@
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import {
   collection, addDoc, onSnapshot,
   query, orderBy, doc, updateDoc,
@@ -6,7 +7,6 @@ import {
 import {
   auth, db, COLLECTIONS, isSuperAdmin
 } from "./firebase-config.js";
-
 // ── STATE ─────────────────────────────────────────────────────
 let currentUser    = null;
 let activeLeagueId = null;
