@@ -5,7 +5,8 @@ import {
   onAuthStateChanged,
   sendPasswordResetEmail,
   updateProfile,
-  signOut
+  signOut,
+  GoogleAuthProvider
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 
 import {
@@ -18,32 +19,27 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/fireba
 import { getAuth } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
-// ── HARDCODED CONFIG ──────────────────────────────────────────
+// ── CONFIG ────────────────────────────────────────────────────
 const firebaseConfig = {
   apiKey:            "AIzaSyCNq_TwRzwE8To7U5S-HLl3F-ulrSwbt-I",
   authDomain:        "wos-predicts-v2.firebaseapp.com",
   projectId:         "wos-predicts-v2",
   storageBucket:     "wos-predicts-v2.firebasestorage.app",
   messagingSenderId: "905164458982",
-  appId:             "1:905164458992:web:722707c56fddc291b82427"
+  appId:             "1:905164458982:web:722707c56fddc291b82427"
 };
 
-const app           = initializeApp(firebaseConfig);
-const auth          = getAuth(app);
-const db            = getFirestore(app);
+const app            = initializeApp(firebaseConfig);
+const auth           = getAuth(app);
+const db             = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
 
 const SUPER_ADMIN_EMAIL = "kwalecedric01@gmail.com";
 const DEFAULT_LEAGUE_ID = "GoQywLIG0V4oWGvl8yRQ";
 
-const COLLECTIONS = {
-  users:   "users",
-  leagues: "leagues",
-  picks:   "picks",
-};
-
-const STATUS = { pending: "pending", approved: "approved", rejected: "rejected" };
-const ROLES  = { player: "player", subAdmin: "sub_admin", owner: "owner" };
+const COLLECTIONS = { users: "users", leagues: "leagues", picks: "picks" };
+const STATUS      = { pending: "pending", approved: "approved", rejected: "rejected" };
+const ROLES       = { player: "player", subAdmin: "sub_admin", owner: "owner" };
 
 // ── SCREEN MANAGER ────────────────────────────────────────────
 function showScreen(id) {
@@ -63,12 +59,11 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
-  console.log('Auth fired. UID:', user.uid);
- if (user.email === SUPER_ADMIN_EMAIL) {
-  sessionStorage.setItem('activeLeagueId', DEFAULT_LEAGUE_ID);
-  window.location.href = 'dashboard.html';
-  return;
-}
+  if (user.email === SUPER_ADMIN_EMAIL) {
+    sessionStorage.setItem('activeLeagueId', DEFAULT_LEAGUE_ID);
+    window.location.href = 'dashboard.html';
+    return;
+  }
 
   try {
     const userSnap = await getDoc(doc(db, 'users', user.uid));
@@ -122,7 +117,7 @@ async function createUserProfile(user, displayName) {
     displayName:  displayName || user.displayName || 'Player',
     email:        user.email,
     photoURL:     user.photoURL || null,
-    isSuperAdmin: user.uid === SUPER_ADMIN_UID,
+    isSuperAdmin: user.email === SUPER_ADMIN_EMAIL,
     leagues:      userSnap.exists() ? (userSnap.data().leagues || {}) : {},
     createdAt:    serverTimestamp(),
   }, { merge: true });
@@ -139,7 +134,7 @@ async function handleSignIn() {
   if (!pass)                 { showError('signin-pass-err', 'Please enter your password'); valid = false; }
   if (!valid) return;
 
-  const btn = document.querySelector('#form-signin .submit-btn');
+  const btn = document.getElementById('signin-submit-btn');
   btn.classList.add('loading');
 
   try {
@@ -171,7 +166,7 @@ async function handleSignUp() {
   if (pass.length < 8)      { showError('signup-pass-err', 'Password must be at least 8 characters'); valid = false; }
   if (!valid) return;
 
-  const btn = document.querySelector('#form-signup .submit-btn');
+  const btn = document.getElementById('signup-submit-btn');
   btn.classList.add('loading');
 
   try {
@@ -273,6 +268,12 @@ async function showForgot() {
   }
 }
 
+// ── SIGN OUT ──────────────────────────────────────────────────
+async function signOutUser() {
+  await signOut(auth);
+  window.location.reload();
+}
+
 // ── UI HELPERS ────────────────────────────────────────────────
 function switchAuthTab(tab) {
   document.getElementById('tab-signin').classList.toggle('active', tab === 'signin');
@@ -313,10 +314,6 @@ function showToast(msg, type) {
   window._toast = setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-window.signOutUser = async function() {
-  await signOut(auth);
-  window.location.reload();
-};
 // ── EXPOSE TO HTML ────────────────────────────────────────────
 window.handleSignIn  = handleSignIn;
 window.handleSignUp  = handleSignUp;
@@ -325,9 +322,9 @@ window.showForgot    = showForgot;
 window.joinLeague    = joinLeague;
 window.switchAuthTab = switchAuthTab;
 window.togglePwd     = togglePwd;
+window.signOutUser   = signOutUser;
 
-// ── ATTACH BUTTON LISTENERS ───────────────────────────────────
-// ── ATTACH BUTTON LISTENERS ───────────────────────────────────
+// ── ATTACH LISTENERS ──────────────────────────────────────────
 window.addEventListener('load', () => {
   document.getElementById('signin-submit-btn')?.addEventListener('click', handleSignIn);
   document.getElementById('signup-submit-btn')?.addEventListener('click', handleSignUp);
@@ -338,6 +335,7 @@ window.addEventListener('load', () => {
   document.getElementById('toggle-signin-pwd')?.addEventListener('click', () => togglePwd('signin-password', document.getElementById('toggle-signin-pwd')));
   document.getElementById('toggle-signup-pwd')?.addEventListener('click', () => togglePwd('signup-password', document.getElementById('toggle-signup-pwd')));
 });
+
 document.addEventListener('keydown', e => {
   if (e.key !== 'Enter') return;
   const active = document.querySelector('.auth-screen[style*="block"]');
