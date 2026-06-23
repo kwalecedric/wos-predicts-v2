@@ -115,9 +115,13 @@ function renderMessages(messages) {
     const groupClass = isMe ? 'mine' : 'theirs';
     const showSender = !isMe && !sameUser;
 
-    html += `<div class="msg-group ${groupClass}">
+    const content = msg.gifUrl
+  ? `<img src="${msg.gifUrl}" style="max-width:200px;border-radius:12px;display:block;">`
+  : `<div class="msg-bubble">${escapeHtml(msg.text)}</div>`;
+
+html += `<div class="msg-group ${groupClass}">
       ${showSender ? `<div class="msg-sender">${escapeHtml(msg.displayName || 'Player')}</div>` : ''}
-      <div class="msg-bubble">${escapeHtml(msg.text)}</div>
+      ${content}
       <div class="msg-time">${timeStr}</div>
     </div>`;
 
@@ -184,6 +188,67 @@ window.insertEmoji = function(emoji) {
   document.getElementById('emoji-picker').style.display = 'none';
   autoResize(input);
 };
+// ── GIF PICKER ────────────────────────────────────────────────
+const GIPHY_KEY = 'qeToAVc7iNQ7UiQoWGKSy8jPYwnGvrDk';
+
+window.toggleGifPicker = function() {
+  const picker      = document.getElementById('gif-picker');
+  const emojiPicker = document.getElementById('emoji-picker');
+  emojiPicker.style.display = 'none';
+  picker.style.display = picker.style.display === 'none' ? 'block' : 'none';
+  if (picker.style.display === 'block') {
+    document.getElementById('gif-search').focus();
+    loadTrendingGifs();
+  }
+};
+
+async function loadTrendingGifs() {
+  const res  = await fetch(`https://api.giphy.com/v1/gifs/trending?api_key=${GIPHY_KEY}&limit=12&rating=g`);
+  const data = await res.json();
+  renderGifs(data.data);
+}
+
+window.searchGifs = async function() {
+  const q = document.getElementById('gif-search').value.trim();
+  if (!q) { loadTrendingGifs(); return; }
+  const res  = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_KEY}&q=${encodeURIComponent(q)}&limit=12&rating=g`);
+  const data = await res.json();
+  renderGifs(data.data);
+};
+
+function renderGifs(gifs) {
+  const el = document.getElementById('gif-results');
+  if (!gifs || gifs.length === 0) {
+    el.innerHTML = '<div style="color:var(--text-muted);font-size:13px;text-align:center;grid-column:span 3;padding:20px;">No GIFs found</div>';
+    return;
+  }
+  el.innerHTML = gifs.map(g => `
+    <img src="${g.images.fixed_height_small.url}"
+      style="width:100%;border-radius:8px;cursor:pointer;object-fit:cover;aspect-ratio:1;"
+      onclick="sendGif('${g.images.original.url}')">`
+  ).join('');
+}
+
+window.sendGif = async function(gifUrl) {
+  document.getElementById('gif-picker').style.display = 'none';
+  try {
+    const chatRef = collection(db, 'leagues', activeLeagueId, COLLECTIONS.chat);
+    await addDoc(chatRef, {
+      text:        '',
+      gifUrl:      gifUrl,
+      userId:      currentUser.uid,
+      displayName: userProfile.displayName || 'Player',
+      sentAt:      serverTimestamp(),
+    });
+  } catch (err) {
+    console.error('GIF send error:', err);
+  }
+};
+
+// Also handle enter key in gif search
+document.getElementById('gif-search')?.addEventListener('keydown', e => {
+  if (e.key === 'Enter') searchGifs();
+});
 
 // ── ESCAPE HTML ───────────────────────────────────────────────
 function escapeHtml(str) {
@@ -193,3 +258,15 @@ function escapeHtml(str) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
 }
+document.addEventListener('click', (e) => {
+  const emojiPicker = document.getElementById('emoji-picker');
+  const gifPicker   = document.getElementById('gif-picker');
+  const emojiBtn    = document.getElementById('emoji-btn');
+  const gifBtn      = document.getElementById('gif-btn');
+  if (emojiPicker && !emojiPicker.contains(e.target) && e.target !== emojiBtn) {
+    emojiPicker.style.display = 'none';
+  }
+  if (gifPicker && !gifPicker.contains(e.target) && e.target !== gifBtn) {
+    gifPicker.style.display = 'none';
+  }
+});
