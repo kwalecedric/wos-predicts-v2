@@ -34,8 +34,13 @@ if (!isSuperAdmin(user.email)) {
   currentUser    = user;
   activeLeagueId = sessionStorage.getItem('activeLeagueId') || 'GoQywLIG0V4oWGvl8yRQ';
 
-  await Promise.all([loadLeagueInfo(), loadPlayers(), loadTodayMatches(), loadAllLeagues()]);
-});
+  await Promise.all([loadLeagueInfo(), loadPlayers(), loadTodayMatches()]);
+if (isSuperAdmin(user.email)) {
+  await loadAllLeagues();
+} else {
+  // Hide leagues tab for non-super admins
+  document.querySelectorAll('.tab-btn')[2].style.display = 'none';
+}
 
 // ── LEAGUE INFO ───────────────────────────────────────────────
 async function loadLeagueInfo() {
