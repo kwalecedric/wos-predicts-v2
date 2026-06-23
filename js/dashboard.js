@@ -77,8 +77,13 @@ onAuthStateChanged(auth, async (user) => {
     window.location.href = "index.html";
     return;
   }
+await init();
 
-  await init();
+  // Show admin button for owners and sub-admins
+  const leagueRole = userData.leagues?.[activeLeagueId]?.role;
+  if (leagueRole === 'owner' || leagueRole === 'sub_admin') {
+    document.getElementById('admin-btn').style.display = 'flex';
+  }
 });
 
 // ─────────────────────────────────────────────────────────────
