@@ -231,7 +231,11 @@
 
     <!-- PROFILE HERO -->
     <div class="profile-hero">
-      <div class="profile-avatar" id="profile-avatar">?</div>
+    <div style="position:relative;display:inline-block;margin-bottom:12px;">
+  <div class="profile-avatar" id="profile-avatar" style="cursor:pointer;" onclick="document.getElementById('avatar-upload').click()">?</div>
+  <div style="position:absolute;bottom:0;right:0;width:24px;height:24px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;" onclick="document.getElementById('avatar-upload').click()">✏️</div>
+  <input type="file" id="avatar-upload" accept="image/*" style="display:none;" onchange="uploadAvatar(this)">
+</div>
       <div class="profile-name"  id="profile-name">Loading...</div>
       <div class="profile-email" id="profile-email"></div>
       <div class="profile-badges" id="profile-badges"></div>
