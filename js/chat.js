@@ -170,6 +170,21 @@ window.handleKey = function(e) {
   }
 };
 
+// ── EMOJI PICKER ──────────────────────────────────────────────
+window.toggleEmojiPicker = function() {
+  const picker = document.getElementById('emoji-picker');
+  picker.style.display = picker.style.display === 'none' ? 'block' : 'none';
+};
+
+window.insertEmoji = function(emoji) {
+  const input = document.getElementById('chat-input');
+  input.value += emoji;
+  input.focus();
+  document.getElementById('send-btn').disabled = false;
+  document.getElementById('emoji-picker').style.display = 'none';
+  autoResize(input);
+};
+
 // ── ESCAPE HTML ───────────────────────────────────────────────
 function escapeHtml(str) {
   return String(str)
