@@ -41,6 +41,7 @@ if (isSuperAdmin(user.email)) {
   // Hide leagues tab for non-super admins
   document.querySelectorAll('.tab-btn')[2].style.display = 'none';
 }
+  });
 
 // ── LEAGUE INFO ───────────────────────────────────────────────
 async function loadLeagueInfo() {
