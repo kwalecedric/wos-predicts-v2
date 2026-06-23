@@ -1,6 +1,6 @@
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 import {
-  doc, getDoc, getDocs,
+  doc, getDoc, getDocs, updateDoc,
   collection, query, where, orderBy
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
@@ -50,10 +50,16 @@ async function loadProfile() {
     const colors  = ['#00E676','#FFB300','#FF6B6B','#64B5F6','#BA68C8','#4DB6AC'];
     const color   = colors[currentUser.uid.charCodeAt(0) % colors.length];
     const initial = (userProfile.displayName || 'P').charAt(0).toUpperCase();
-    const avatar  = document.getElementById('profile-avatar');
-    avatar.textContent       = initial;
-    avatar.style.background  = color;
-
+   const avatar  = document.getElementById('profile-avatar');
+if (userProfile.photoURL) {
+  avatar.style.backgroundImage    = `url(${userProfile.photoURL})`;
+  avatar.style.backgroundSize     = 'cover';
+  avatar.style.backgroundPosition = 'center';
+  avatar.textContent              = '';
+} else {
+  avatar.textContent      = initial;
+  avatar.style.background = color;
+}
     document.getElementById('profile-name').textContent  = userProfile.displayName || 'Player';
     document.getElementById('profile-email').textContent = userProfile.email || '';
     document.getElementById('stat-points').textContent   = points;
@@ -205,12 +211,49 @@ async function loadHistory() {
 }
 
 // ── SIGN OUT ──────────────────────────────────────────────────
-window.handleSignOut = async function() {
+// ── UPLOAD AVATAR ─────────────────────────────────────────────
+window.uploadAvatar = async function(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const maxSize = 2 * 1024 * 1024; // 2MB
+  if (file.size > maxSize) {
+    showToast('Image too large. Max 2MB.', 'error');
+    return;
+  }
+
+  showToast('Uploading...', '');
+
   try {
-    await signOut(auth);
-    window.location.href = "index.html";
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', 'jlayyz6y');
+    formData.append('folder', 'wos_predicts/avatars');
+
+    const res  = await fetch('https://api.cloudinary.com/v1_1/dsccskrei/image/upload', {
+      method: 'POST',
+      body:   formData,
+    });
+    const data = await res.json();
+
+    if (!data.secure_url) throw new Error('Upload failed');
+
+    // Save to Firestore
+    const userRef = doc(db, COLLECTIONS.users, currentUser.uid);
+    await updateDoc(userRef, { photoURL: data.secure_url });
+
+    // Update avatar display
+    const avatar = document.getElementById('profile-avatar');
+    avatar.style.backgroundImage  = `url(${data.secure_url})`;
+    avatar.style.backgroundSize   = 'cover';
+    avatar.style.backgroundPosition = 'center';
+    avatar.textContent            = '';
+
+    showToast('Profile picture updated ✅', 'success');
+
   } catch (err) {
-    showToast('Error signing out', 'error');
+    console.error('Upload error:', err);
+    showToast('Upload failed. Try again.', 'error');
   }
 };
 
