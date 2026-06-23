@@ -445,7 +445,7 @@ window.loadLeaguePlayers = async function(leagueId) {
           </div>
           <div class="player-actions">
             <select onchange="updateRole('${u.id}', '${leagueId}', this.value)"
-              style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:6px 10px;color:var(--text);font-size:12px;font-family:inherit;">
+              style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:6px 10px;color:var(--text);font-size:12px;font-family:inherit;color-scheme:dark;"
               <option value="player"    ${role === 'player'    ? 'selected' : ''}>Player</option>
               <option value="sub_admin" ${role === 'sub_admin' ? 'selected' : ''}>Sub Admin</option>
               <option value="owner"     ${role === 'owner'     ? 'selected' : ''}>Owner</option>
