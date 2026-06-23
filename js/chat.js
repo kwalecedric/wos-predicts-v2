@@ -270,3 +270,7 @@ document.addEventListener('click', (e) => {
     gifPicker.style.display = 'none';
   }
 });
+window.addEventListener('load', () => {
+  document.getElementById('gif-btn')?.addEventListener('click', window.toggleGifPicker);
+  document.getElementById('emoji-btn')?.addEventListener('click', window.toggleEmojiPicker);
+});
