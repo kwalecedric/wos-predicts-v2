@@ -18,7 +18,18 @@ let allLeagues     = [];
 // ── ENTRY POINT ───────────────────────────────────────────────
 onAuthStateChanged(auth, async (user) => {
   if (!user) { window.location.href = "index.html"; return; }
-  if (!isSuperAdmin(user.email)) { window.location.href = "dashboard.html"; return; }
+// Allow super admin, owners and sub-admins
+if (!isSuperAdmin(user.email)) {
+  const userSnap = await getDoc(doc(db, COLLECTIONS.users, user.uid));
+  if (!userSnap.exists()) { window.location.href = "dashboard.html"; return; }
+  const userData  = userSnap.data();
+  const leagueId  = sessionStorage.getItem('activeLeagueId') || 'GoQywLIG0V4oWGvl8yRQ';
+  const role      = userData.leagues?.[leagueId]?.role;
+  if (role !== 'owner' && role !== 'sub_admin') {
+    window.location.href = "dashboard.html";
+    return;
+  }
+}
 
   currentUser    = user;
   activeLeagueId = sessionStorage.getItem('activeLeagueId') || 'GoQywLIG0V4oWGvl8yRQ';
@@ -119,22 +130,24 @@ window.removePlayer = async function(uid) {
 // ── LOAD TODAY'S MATCHES ──────────────────────────────────────
 async function loadTodayMatches() {
   try {
+    // Show last 7 days of matches that haven't been scored yet
+    // plus today's matches
     const now   = new Date();
-    const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const end   = new Date(start.getTime() + 24 * 60 * 60 * 1000);
+    const start = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
 
     const q    = query(collection(db, COLLECTIONS.matches),
                    where('kickoff', '>=', start.toISOString()),
-                   where('kickoff', '<',  end.toISOString()));
+                   where('kickoff', '<=', now.toISOString()));
     const snap = await getDocs(q);
-    todayMatches = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    todayMatches = snap.docs
+      .map(d => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => new Date(b.kickoff) - new Date(a.kickoff));
     renderResultsForm();
   } catch (err) {
     console.error('Error loading matches:', err);
     document.getElementById('results-list').innerHTML = '<div class="empty-state">Could not load matches.</div>';
   }
 }
-
 // ── RENDER RESULTS FORM ───────────────────────────────────────
 function renderResultsForm() {
   const el = document.getElementById('results-list');
