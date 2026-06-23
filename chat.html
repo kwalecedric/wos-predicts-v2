@@ -206,7 +206,8 @@
     <div class="loading-spinner"></div>
   </div>
 
-  <div class="chat-input-bar">
+ <div class="chat-input-bar">
+  <button class="emoji-btn" id="emoji-btn" onclick="toggleEmojiPicker()">😊</button>
     <textarea class="chat-input" id="chat-input" placeholder="Message..." rows="1"
       oninput="autoResize(this)" onkeydown="handleKey(event)"></textarea>
     <button class="send-btn" id="send-btn" onclick="sendMessage()" disabled>
@@ -238,5 +239,40 @@
   </nav>
 
   <script type="module" src="js/chat.js"></script>
+  <!-- EMOJI PICKER -->
+<div id="emoji-picker" style="display:none;position:fixed;bottom:130px;left:16px;right:16px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:12px;z-index:100;max-height:200px;overflow-y:auto;">
+  <div style="display:flex;flex-wrap:wrap;gap:8px;">
+    <span style="font-size:24px;cursor:pointer;" onclick="insertEmoji('😂')">😂</span>
+    <span style="font-size:24px;cursor:pointer;" onclick="insertEmoji('🔥')">🔥</span>
+    <span style="font-size:24px;cursor:pointer;" onclick="insertEmoji('😭')">😭</span>
+    <span style="font-size:24px;cursor:pointer;" onclick="insertEmoji('🎉')">🎉</span>
+    <span style="font-size:24px;cursor:pointer;" onclick="insertEmoji('👏')">👏</span>
+    <span style="font-size:24px;cursor:pointer;" onclick="insertEmoji('😤')">😤</span>
+    <span style="font-size:24px;cursor:pointer;" onclick="insertEmoji('🤣')">🤣</span>
+    <span style="font-size:24px;cursor:pointer;" onclick="insertEmoji('😍')">😍</span>
+    <span style="font-size:24px;cursor:pointer;" onclick="insertEmoji('🙏')">🙏</span>
+    <span style="font-size:24px;cursor:pointer;" onclick="insertEmoji('💀')">💀</span>
+    <span style="font-size:24px;cursor:pointer;" onclick="insertEmoji('⚽')">⚽</span>
+    <span style="font-size:24px;cursor:pointer;" onclick="insertEmoji('🏆')">🏆</span>
+    <span style="font-size:24px;cursor:pointer;" onclick="insertEmoji('🎯')">🎯</span>
+    <span style="font-size:24px;cursor:pointer;" onclick="insertEmoji('😎')">😎</span>
+    <span style="font-size:24px;cursor:pointer;" onclick="insertEmoji('🤦')">🤦</span>
+    <span style="font-size:24px;cursor:pointer;" onclick="insertEmoji('💪')">💪</span>
+    <span style="font-size:24px;cursor:pointer;" onclick="insertEmoji('👀')">👀</span>
+    <span style="font-size:24px;cursor:pointer;" onclick="insertEmoji('🫡')">🫡</span>
+    <span style="font-size:24px;cursor:pointer;" onclick="insertEmoji('😢')">😢</span>
+    <span style="font-size:24px;cursor:pointer;" onclick="insertEmoji('🤩')">🤩</span>
+    <span style="font-size:24px;cursor:pointer;" onclick="insertEmoji('😱')">😱</span>
+    <span style="font-size:24px;cursor:pointer;" onclick="insertEmoji('🫶')">🫶</span>
+    <span style="font-size:24px;cursor:pointer;" onclick="insertEmoji('👎')">👎</span>
+    <span style="font-size:24px;cursor:pointer;" onclick="insertEmoji('👍')">👍</span>
+    <span style="font-size:24px;cursor:pointer;" onclick="insertEmoji('🃏')">🃏</span>
+    <span style="font-size:24px;cursor:pointer;" onclick="insertEmoji('🥳')">🥳</span>
+    <span style="font-size:24px;cursor:pointer;" onclick="insertEmoji('😏')">😏</span>
+    <span style="font-size:24px;cursor:pointer;" onclick="insertEmoji('🤯')">🤯</span>
+    <span style="font-size:24px;cursor:pointer;" onclick="insertEmoji('😴')">😴</span>
+    <span style="font-size:24px;cursor:pointer;" onclick="insertEmoji('🫠')">🫠</span>
+  </div>
+</div>
 </body>
 </html>
