@@ -260,6 +260,11 @@
   <div class="admin-section">
     <div class="admin-section-title">➕ Create new league</div>
     <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:4px;">
+  <div id="league-logo-preview" style="width:72px;height:72px;border-radius:16px;background:var(--bg);border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer;" onclick="document.getElementById('league-logo-input').click()">🏆</div>
+  <div style="font-size:12px;color:var(--text-muted);">Tap to add league logo</div>
+  <input type="file" id="league-logo-input" accept="image/*" style="display:none;" onchange="previewLeagueLogo(this)">
+</div>
       <input type="text" id="new-league-name" placeholder="League name e.g. Squad Champions 2026"
         style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-size:14px;font-family:inherit;outline:none;">
       <input type="text" id="new-league-owner-email" placeholder="Owner email e.g. friend@gmail.com"
