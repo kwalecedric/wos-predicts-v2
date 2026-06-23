@@ -377,6 +377,24 @@ window.createLeague = async function() {
 
   if (!name)       { showToast('Enter a league name', 'error'); return; }
   if (!ownerEmail) { showToast('Enter owner email', 'error'); return; }
+  // Upload logo if selected
+let logoUrl = '';
+const logoFile = document.getElementById('league-logo-input').files[0];
+if (logoFile) {
+  try {
+    const formData = new FormData();
+    formData.append('file', logoFile);
+    formData.append('upload_preset', 'jlayyz6y');
+    formData.append('folder', 'wos_predicts/leagues');
+    const res  = await fetch('https://api.cloudinary.com/v1_1/dsccskrei/image/upload', {
+      method: 'POST', body: formData,
+    });
+    const data = await res.json();
+    logoUrl = data.secure_url || '';
+  } catch (err) {
+    console.error('Logo upload failed:', err);
+  }
+}
 
   const code = generateLeagueCode();
 
@@ -390,6 +408,7 @@ window.createLeague = async function() {
       code,
       ownerEmail,
       prizePool,
+      logoUrl,
       status:       'active',
       createdAt:    serverTimestamp(),
       codeExpiresAt: expiresAt,
@@ -507,3 +526,16 @@ function showToast(msg, type) {
   clearTimeout(window._t);
   window._t = setTimeout(() => t.classList.remove('show'), 3000);
 }
+window.previewLeagueLogo = function(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const preview = document.getElementById('league-logo-preview');
+    preview.style.backgroundImage    = `url(${e.target.result})`;
+    preview.style.backgroundSize     = 'cover';
+    preview.style.backgroundPosition = 'center';
+    preview.textContent              = '';
+  };
+  reader.readAsDataURL(file);
+};
