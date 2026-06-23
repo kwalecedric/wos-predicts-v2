@@ -498,16 +498,18 @@ window.lockInPick = async function() {
 
   try {
     // Save pick to Firestore
-    const pickData = {
-      userId:      currentUser.uid,
-      matchId:     activePick.id,
-      pick:        selectedPick,
-      wildcard:    wildcardActive,
-      submittedAt: serverTimestamp(),
-      // Only save these if relevant
-      ...(selectedPick === 'correct_score' && { scoreHome, scoreAway }),
-      ...(selectedPick === 'motm'          && { motmPlayer }),
-    };
+  const pickData = {
+  userId:      currentUser.uid,
+  matchId:     activePick.id,
+  leagueId:    activeLeagueId,
+  pick:        selectedPick,
+  wildcard:    wildcardActive,
+  submittedAt: serverTimestamp(),
+  scored:      false,
+  // Only save these if relevant
+  ...(selectedPick === 'correct_score' && { scoreHome, scoreAway }),
+  ...(selectedPick === 'motm'          && { motmPlayer }),
+};
 
     await addDoc(collection(db, COLLECTIONS.picks), pickData);
 
