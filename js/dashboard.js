@@ -118,7 +118,16 @@ async function loadUserProfile() {
     document.getElementById('greeting').textContent = `Hey ${name} 👋`;
 
     // Update avatar — first letter of name
-    document.getElementById('user-avatar').textContent = name.charAt(0).toUpperCase();
+  // Update avatar — photo if available, else first letter
+const avatarEl = document.getElementById('user-avatar');
+if (userProfile.photoURL) {
+  avatarEl.style.backgroundImage    = `url(${userProfile.photoURL})`;
+  avatarEl.style.backgroundSize     = 'cover';
+  avatarEl.style.backgroundPosition = 'center';
+  avatarEl.textContent              = '';
+} else {
+  avatarEl.textContent = name.charAt(0).toUpperCase();
+}
 
     // Update stats
     // Get stats from league-specific data
